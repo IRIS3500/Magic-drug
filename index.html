@@ -471,9 +471,27 @@
         document.getElementById('cmd-2').innerText=`魔药命名 ${name}|${desc}`;
     }
     window.copyCmd=()=>{ let cmd=document.getElementById('cmd-1').innerText+" "+document.getElementById('cmd-2').innerText; navigator.clipboard.writeText(cmd).then(()=>alert("✅复制成功")).catch(()=>{let ta=document.createElement('textarea'); ta.value=cmd; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); alert("复制成功");}); };
-    document.getElementById('exportCardBtn').addEventListener('click', async()=>{ let canvas=await html2canvas(document.getElementById('magicTarot'),{scale:3,backgroundColor:null}); let a=document.createElement('a'); a.download=`witch_potion_${Date.now()}.png`; a.href=canvas.toDataURL(); a.click(); });
-    filterSelect.addEventListener('change',applyFilter); sortSelect.addEventListener('change',applyFilter);
-    applyFilter(); updateSystem();
+	document.getElementById('exportCardBtn').addEventListener('click', async () => {
+    try {
+        const card = document.getElementById('magicTarot');
+        if (!card) {
+            alert('未找到卡牌元素');
+            return;
+        }
+        const canvas = await html2canvas(card, {
+            scale: 3,
+            backgroundColor: null,
+            useCORS: true   // 尝试解决跨域图片问题
+        });
+        const a = document.createElement('a');
+        a.download = `witch_potion_${Date.now()}.png`;
+        a.href = canvas.toDataURL();
+        a.click();
+    } catch (err) {
+        console.error('导出失败', err);
+        alert('导出失败，请查看控制台错误');
+    }
+});
 </script>
 </body>
 </html>
